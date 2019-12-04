@@ -1,3 +1,5 @@
+# Script to read in large dataset and prepare data for basic modeling
+
 import pandas as pd
 import numpy as np
 from scipy.sparse import hstack
@@ -10,12 +12,7 @@ from nltk.tokenize import RegexpTokenizer
 from nltk import WordNetLemmatizer
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
-from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.naive_bayes import BernoulliNB 
-from sklearn.naive_bayes import MultinomialNB 
 
 
 filepath = '../datasets/news_cleaned_2018_02_13.csv'
@@ -23,7 +20,7 @@ nlinesfile = 9408908
 
 cols = ['type', 'title']
 
-nlinesrandomsample = 5000000
+nlinesrandomsample = n # choose desired random sample size
 lines2skip = np.random.choice(np.arange(1,nlinesfile+1), (nlinesfile-nlinesrandomsample), replace=False, )
 df = pd.read_csv(filepath, skiprows=lines2skip, usecols= cols )
 
