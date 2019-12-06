@@ -1,0 +1,67 @@
+# Imports
+
+import pandas as pd
+import numpy as np
+from scipy.sparse import hstack
+
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import stanfordnlp
+from textblob import TextBlob
+
+from nltk.tokenize import RegexpTokenizer
+from nltk import WordNetLemmatizer
+
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
+# When you have your dataframe
+
+# Text cleaning
+
+def tokenize(x):
+    tokenizer = RegexpTokenizer(r'\w+')
+    return tokenizer.tokenize(x)
+
+df['tokens'] = df['text'].map(tokenize)
+
+text_length = []
+for i in df.index:
+    length = len(df['tokens'][i])
+    text_length.append(length)
+df['text_length'] = text_length
+
+def lemmatize(x):
+    lemmatizer = WordNetLemmatizer()
+    return ' '.join([lemmatizer.lemmatize(word) for word in x])
+
+df['lemma'] = df['tokens'].map(lemmatize)
+
+def text_joiner(x):
+    return ' '.join([word for word in x])
+
+df['clean_text'] = df['tokens'].map(text_joiner)
+
+dc_score = []
+for i in df_full.index:
+    score = textstat.dale_chall_readability_score(df_full['clean_text'][i])
+    dc_score.append(score)
+    
+
+# Text score looping
+
+df['dc_score'] = dc_score
+
+subjectivity = []
+for i in df_full.index:
+    text = TextBlob(df['clean_text'][i])
+    sub = text.sentiment
+    subjectivity.append(sub[1])
+
+df['sub'] = subjectivity
+
+analyzer = SentimentIntensityAnalyzer()
+vs_list = []
+for i in df.index:
+    vs = analyzer.polarity_scores(df['clean_text'][i])
+    vs_list.append(vs['neu'])
+
+df['vs'] = vs_list
